@@ -41,6 +41,11 @@ if [ "$USE_PREDEFINED_KERNEL_CONFIG" = "true" ] ; then
   # Use predefined configuration file for the kernel.
   echo "Using config file $SRC_DIR/minimal_config/kernel.config"  
   cp -f $SRC_DIR/minimal_config/kernel.config .config
+  pushd include/linux
+  ln -sf compiler-gcc4.h compiler-gcc5.h
+  popd
+  make oldconfig
+  sed -i '373,375d' kernel/timeconst.pl
 else
   # Create default configuration file for the kernel.
   make defconfig -j $NUM_JOBS
@@ -80,13 +85,9 @@ else
 
   # Check if we are building 32-bit kernel. The exit code is '1' when we are
   # building 64-bit kernel, otherwise the exit code is '0'.
-  grep -q "CONFIG_X86_32=y" .config
+  # Enable the mixed EFI mode when building 64-bit kernel.
+  grep -q "CONFIG_X86_32=y" .config || echo "CONFIG_EFI_MIXED=y" >> .config
 
-  # The '$?' variable holds the exit code of the last issued command.
-  if [ $? = 1 ] ; then
-    # Enable the mixed EFI mode when building 64-bit kernel.
-    echo "CONFIG_EFI_MIXED=y" >> .config
-  fi
 fi
 
 # Compile the kernel with optimization for 'parallel jobs' = 'number of processors'.

@@ -133,7 +133,7 @@ cp $WORK_SYSLINUX_DIR/bios/core/isolinux.bin .
 cp $WORK_SYSLINUX_DIR/bios/com32/elflink/ldlinux/ldlinux.c32 .
 
 # Create the ISOLINUX configuration file.
-echo 'default kernel.xz  initrd=rootfs.xz vga=ask' > ./syslinux.cfg
+echo 'default kernel.xz  initrd=rootfs.xz' > ./syslinux.cfg
 
 # Create UEFI start script.
 mkdir -p efi/boot
