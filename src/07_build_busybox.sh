@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -eo pipefail
 
 echo "*** BUILD BUSYBOX BEGIN ***"
 
@@ -59,7 +60,7 @@ GLIBC_PREPARED_ESCAPED=$(echo \"$GLIBC_PREPARED\" | sed 's/\//\\\//g')
 sed -i "s/.*CONFIG_SYSROOT.*/CONFIG_SYSROOT=$GLIBC_PREPARED_ESCAPED/" .config
 
 # Read the 'CFLAGS' property from '.config'
-CFLAGS="$(grep -i ^CFLAGS .config | cut -f2 -d'=')"
+CFLAGS="$(grep -i ^CFLAGS ${SRC_DIR}/.config | cut -f2 -d'=')"
 
 # Compile busybox with optimization for "parallel jobs" = "number of processors".
 echo "Building BusyBox..."

@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eo pipefail
+
 
 echo "*** BUILD KERNEL BEGIN ***"
 

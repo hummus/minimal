@@ -174,5 +174,5 @@ exec switch_root /mnt /etc/03_init.sh
 echo "(/etc/02_overlay.sh) - there is a serious bug..."
 
 # Wait until any key has been pressed.
-read -n1 -s
+# read -n1 -s
 

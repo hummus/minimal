@@ -6,3 +6,6 @@ for DEVICE in /sys/class/net/* ; do
   ip link set ${DEVICE##*/} up
   [ ${DEVICE##*/} != lo ] && udhcpc -b -i ${DEVICE##*/} -s /etc/05_rc.dhcp
 done
+
+# fio
+fio --server

@@ -41,7 +41,7 @@
 cat /etc/msg/03_init_01.txt
 
 # Wait 5 second or until any keybord key is pressed.
-read -t 5 -n1 -s key
+# read -t 5 -n1 -s key
 
 if [ "$key" = "" ] ; then
   # Use default initialization logic based on configuration in '/etc/inittab'.
@@ -64,5 +64,5 @@ fi
 echo "(/etc/03_init.sh) - there is a serious bug..."
 
 # Wait until any key has been pressed.
-read -n1 -s
+# read -n1 -s
 

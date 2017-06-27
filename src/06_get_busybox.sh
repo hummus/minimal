@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -eo pipefail
 
 echo "*** GET BUSYBOX BEGIN ***"
 

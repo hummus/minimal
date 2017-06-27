@@ -1,4 +1,5 @@
 #!/bin/sh
+set -ex
 
 SRC_DIR=$(pwd)
 
@@ -46,22 +47,58 @@ echo "Installing fio..."
 make install -j $NUM_JOBS
 
 mkdir -p ../fio_installed/lib
-
 # # Copy all dependent GLIBC libraries.
-# cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libnsl.so.1 ../dropbear_installed/lib
-# cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libnss_compat.so.2 ../dropbear_installed/lib
-# cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libutil.so.1 ../dropbear_installed/lib
-# cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libcrypt.so.1 ../dropbear_installed/lib
+cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/librt.so.1 ../fio_installed/lib
+# cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libm.so.6 ../fio_installed/lib
+cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libpthread.so.0 ../fio_installed/lib
+cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libdl.so.2 ../fio_installed/lib
 
-echo "Reducing fio size..."
-strip -g \
-  ../fio_installed/bin/*
-
-cp -r \
-  ../fio_installed/bin \
-  $MAIN_SRC_DIR/work/src/minimal_overlay/rootfs
-
-echo "fio has been installed."
 
 cd $SRC_DIR
 
+cd $MAIN_SRC_DIR/work/overlay/zlib
+
+cd $(ls -d zlib-*)
+
+echo "Preparing zlib work area. This may take a while..."
+
+echo "Configuring zlib..."
+./configure \
+  --prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed
+
+echo "Building fio.zlib..."
+make -j $NUM_JOBS
+
+echo "Installing fio.zlib..."
+make install -j $NUM_JOBS
+
+mkdir -p ../fio_installed/lib
+
+cd $SRC_DIR
+
+cd $MAIN_SRC_DIR/work/overlay/libaio
+
+cd $(ls -d libaio-*)
+
+echo "Preparing libaio work area. This may take a while..."
+make clean -j $NUM_JOBS 2>/dev/null
+
+echo "Build and install fio.libaio..."
+make -j $NUM_JOBS
+make prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed install
+
+
+cd $MAIN_SRC_DIR/work/overlay/fio
+
+echo "Reducing fio size..."
+rm -Rf fio_installed/lib/pkgconfig
+strip -g \
+  fio_installed/bin/fio \
+  fio_installed/lib/*
+
+cp -r \
+  fio_installed/bin \
+  fio_installed/lib \
+  $MAIN_SRC_DIR/work/rootfs
+
+echo "fio has been installed."
