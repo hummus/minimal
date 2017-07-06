@@ -1,5 +1,8 @@
 #!/bin/sh
 
+modprobe e1000
+modprobe e1000e
+
 # DHCP network
 for DEVICE in /sys/class/net/* ; do
   echo "Found network device ${DEVICE##*/}"
@@ -8,4 +11,4 @@ for DEVICE in /sys/class/net/* ; do
 done
 
 # fio
-# fio --server
+fio --server

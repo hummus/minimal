@@ -5,6 +5,8 @@ echo "*** GENERATE ROOTFS BEGIN ***"
 
 SRC_ROOT=$(pwd)
 
+KERNEL_INSTALLED=$(pwd)/work/kernel/kernel_installed
+
 # Remember the glibc prepared folder.
 GLIBC_PREPARED=$(pwd)/work/glibc/glibc_prepared
 
@@ -21,6 +23,9 @@ cp -r $BUSYBOX_INSTALLED rootfs
 
 # Copy all rootfs resources to the location of our 'initramfs' folder.
 cp -r src/minimal_rootfs/* rootfs
+
+# Copy kernel modules
+cp -r $KERNEL_INSTALLED/lib rootfs/
 
 cd rootfs
 
@@ -67,7 +72,7 @@ cp $GLIBC_PREPARED/lib/libnss_dns.so.2 lib
 strip -g \
   $SRC_ROOT/work/rootfs/bin/* \
   $SRC_ROOT/work/rootfs/sbin/* \
-  $SRC_ROOT/work/rootfs/lib/* \
+  $SRC_ROOT/work/rootfs/lib/l* \
   2>/dev/null
 echo "Reduced the size of libraries and executables."
 

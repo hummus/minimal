@@ -113,6 +113,17 @@ make \
   INSTALL_HDR_PATH=$SRC_DIR/work/kernel/kernel_installed \
   headers_install -j $NUM_JOBS
 
+echo "Building kernel modules..."
+make \
+  modules -j $NUM_JOBS
+make \
+  INSTALL_MOD_PATH=$SRC_DIR/work/kernel/kernel_installed \
+  modules_install
+
+
+# remove all modules but the networking
+
+
 cd $SRC_DIR
 
 echo "*** BUILD KERNEL END ***"
