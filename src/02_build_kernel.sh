@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eo pipefail
-
+set -x
 
 echo "*** BUILD KERNEL BEGIN ***"
 
@@ -42,12 +42,14 @@ fi
 if [ "$USE_PREDEFINED_KERNEL_CONFIG" = "true" ] ; then
   # Use predefined configuration file for the kernel.
   echo "Using config file $SRC_DIR/minimal_config/kernel.config"  
+  
+  # patch -p1 < $SRC_DIR/gcc6.patch
+  # pushd include/linux
+  # ln -sf compiler-gcc4.h compiler-gcc5.h
+  # popd
   cp -f $SRC_DIR/minimal_config/kernel.config .config
-  pushd include/linux
-  ln -sf compiler-gcc4.h compiler-gcc5.h
-  popd
   make oldconfig
-  sed -i '373,375d' kernel/timeconst.pl
+  # sed -i '373,375d' kernel/timeconst.pl
 else
   # Create default configuration file for the kernel.
   make defconfig -j $NUM_JOBS

@@ -8,4 +8,4 @@ for DEVICE in /sys/class/net/* ; do
 done
 
 # fio
-fio --server
+# fio --server
