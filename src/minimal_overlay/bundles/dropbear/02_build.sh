@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -ex
 
 SRC_DIR=$(pwd)
 
@@ -29,8 +30,8 @@ cd $MAIN_SRC_DIR/work/overlay/dropbear
 # Change to the Dropbear source directory which ls finds, e.g. 'dropbear-2016.73'.
 cd $(ls -d dropbear-*)
 
-echo "Preparing Dropbear work area. This may take a while..."
-make clean -j $NUM_JOBS 2>/dev/null
+# echo "Preparing Dropbear work area. This may take a while..."
+# make clean -j $NUM_JOBS 2>/dev/null
 
 rm -rf ../dropbear_installed
 
@@ -102,7 +103,7 @@ cp -r \
   ../dropbear_installed/bin \
   ../dropbear_installed/sbin \
   ../dropbear_installed/lib \
-  $MAIN_SRC_DIR/work/src/minimal_overlay/rootfs
+  $MAIN_SRC_DIR/work/rootfs
 
 echo "Dropbear has been installed."
 

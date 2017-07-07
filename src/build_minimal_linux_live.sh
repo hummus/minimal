@@ -9,9 +9,9 @@ set -eou pipefail
 # bash 05_prepare_glibc.sh
 # bash 06_get_busybox.sh
 # bash 07_build_busybox.sh
-# bash 08_prepare_src.sh
+bash 08_prepare_src.sh
 bash 09_generate_rootfs.sh
 bash 09b_overlay_to_rootfs.sh
 bash 10_pack_rootfs.sh
-bash 11_get_syslinux.sh
-bash 12_generate_iso.sh
+# bash 11_get_syslinux.sh
+# bash 12_generate_iso.sh

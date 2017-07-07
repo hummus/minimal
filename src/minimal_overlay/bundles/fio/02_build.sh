@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -ex
 
 SRC_DIR=$(pwd)
@@ -25,7 +25,42 @@ NUM_JOBS=$((NUM_CORES * JOB_FACTOR))
 #   echo "Cannot continue - Dropbear SSH depends on GLIBC. Please buld GLIBC first."
 #   exit 1
 # fi
+cd $SRC_DIR
+rm -rf ../fio_installed
+mkdir -p ../fio_installed/lib
 
+########
+# zlib
+cd $MAIN_SRC_DIR/work/overlay/zlib
+cd $(ls -d zlib-*)
+
+echo "Preparing zlib work area. This may take a while..."
+echo "Configuring zlib..."
+
+./configure \
+  --prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed
+
+echo "Building fio.zlib..."
+make -j $NUM_JOBS
+
+echo "Installing fio.zlib..."
+make install -j $NUM_JOBS
+
+########
+# libaio
+cd $MAIN_SRC_DIR/work/overlay/libaio
+
+cd $(ls -d libaio-*)
+
+echo "Preparing libaio work area. This may take a while..."
+make clean -j $NUM_JOBS 2>/dev/null
+
+echo "Build and install fio.libaio..."
+make -j $NUM_JOBS
+make prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed install
+
+########
+# fio
 cd $MAIN_SRC_DIR/work/overlay/fio
 
 # Change to the Dropbear source directory which ls finds, e.g. 'dropbear-2016.73'.
@@ -34,11 +69,14 @@ cd $(ls -d fio-*)
 echo "Preparing fio work area. This may take a while..."
 make clean -j $NUM_JOBS 2>/dev/null
 
-rm -rf ../fio_installed
-
 echo "Configuring fio..."
 ./configure \
-  --prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed
+  --prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed > configure.out
+
+# these must be detected and enabled
+cat configure.out | grep -E '^Linux AIO support' | grep -E 'yes$'
+cat configure.out | grep -E '^zlib' | grep -E 'yes$'
+
 
 echo "Building fio..."
 make -j $NUM_JOBS
@@ -55,37 +93,6 @@ cp $MAIN_SRC_DIR/work/glibc/glibc_prepared/lib/libdl.so.2 ../fio_installed/lib
 
 
 cd $SRC_DIR
-
-cd $MAIN_SRC_DIR/work/overlay/zlib
-
-cd $(ls -d zlib-*)
-
-echo "Preparing zlib work area. This may take a while..."
-
-echo "Configuring zlib..."
-./configure \
-  --prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed
-
-echo "Building fio.zlib..."
-make -j $NUM_JOBS
-
-echo "Installing fio.zlib..."
-make install -j $NUM_JOBS
-
-mkdir -p ../fio_installed/lib
-
-cd $SRC_DIR
-
-cd $MAIN_SRC_DIR/work/overlay/libaio
-
-cd $(ls -d libaio-*)
-
-echo "Preparing libaio work area. This may take a while..."
-make clean -j $NUM_JOBS 2>/dev/null
-
-echo "Build and install fio.libaio..."
-make -j $NUM_JOBS
-make prefix=$MAIN_SRC_DIR/work/overlay/fio/fio_installed install
 
 
 cd $MAIN_SRC_DIR/work/overlay/fio

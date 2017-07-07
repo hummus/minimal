@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -ex
 
 SRC_DIR=$(pwd)
 

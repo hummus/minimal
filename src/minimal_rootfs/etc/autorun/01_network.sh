@@ -1,5 +1,5 @@
 #!/bin/sh
-
+depmod -ae
 modprobe e1000
 modprobe e1000e
 
@@ -10,5 +10,5 @@ for DEVICE in /sys/class/net/* ; do
   [ ${DEVICE##*/} != lo ] && udhcpc -b -i ${DEVICE##*/} -s /etc/05_rc.dhcp
 done
 
-# fio
-fio --server
+nohup fio --server & 
+dropbear -F

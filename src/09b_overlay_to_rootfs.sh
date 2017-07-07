@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
+SRC_DIR=$(pwd)
 # because overaly fs doesn't work in kernels < 3.4.18
 # invoke the overlays but just put them in the regular busybox initrd
 
@@ -15,3 +16,6 @@ if [ ! "$OVERLAY_BUNDLES" = "" ] ; then
 else
   echo "Generation of additional overlay bundles has been skipped."
 fi
+
+mkdir -p work/rootfs/root/.ssh
+cp minimal_overlay/rootfs/root/.ssh/authorized_keys work/rootfs/root/.ssh/authorized_keys
